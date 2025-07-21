@@ -12,7 +12,8 @@
     "paths": {
       "@@/*": [".dumi/tmp/*"],
       "g6-extension-vue": ["src"],
-      "g6-extension-vue/*": ["src/*", "*"]
+      "g6-extension-vue/*": ["src/*", "*"],
+      "@/*": ["src/*"],
     }
   },
   "include": [".dumirc.ts", "src/**/*"]

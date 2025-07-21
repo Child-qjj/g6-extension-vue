@@ -84,7 +84,7 @@
     "@vue-styled-components/core": "^1.13.1",
     "@vue/test-utils": "^2.4.6",
     "ant-design-vue": "^4.2.6",
-    "dumi": "^2.4.13",
+    "dumi": "^2.4.21",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.17.0",
     "happy-dom": "^15.7.4",

@@ -9,7 +9,7 @@ export default defineConfig({
   },
   outputPath: 'docs-dist',
   themeConfig: {
-    name: 'G6-Vue-Node',
+    name: 'Vue G6 Extension',
     footer: 'Open-source MIT Licensed | Copyright © 2025-present',
     socialLinks: {
       github: repository, // GitHub 地址
