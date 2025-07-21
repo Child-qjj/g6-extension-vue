@@ -3,22 +3,14 @@
 </template>
 
 <script setup lang="ts">
-import { BugOutlined } from '@ant-design/icons-vue';
 import type { EdgeData, Element, GraphData, GraphOptions, IPointerEvent, NodeData } from '@antv/g6';
 import { ExtensionCategory, HoverActivate, idOf, register } from '@antv/g6';
-import { Flex, Typography } from 'ant-design-vue';
-import { computed, ComputedRef, CSSProperties, onMounted, ref, h } from 'vue-demi';
-import Graph from '@/components/graph.vue';
-
-const { Text } = Typography;
+import { computed, ComputedRef, onMounted, ref, h } from 'vue-demi';
+import { VueNode } from '../../src/vue-node';
+import Graph from '../../src/components/graph.vue';
+import PerformanceNode from './performance-node.vue';
 
 const ACTIVE_COLOR = '#f6c523';
-const COLOR_MAP: Record<string, string> = {
-  'pre-inspection': '#3fc1c9',
-  problem: '#8983f3',
-  inspection: '#f48db4',
-  solution: '#ffaa64',
-};
 
 class HoverElement extends HoverActivate {
   protected getActiveIds(event: IPointerEvent<Element>) {
@@ -39,35 +31,8 @@ class HoverElement extends HoverActivate {
     return ids;
   }
 }
-
 register(ExtensionCategory.BEHAVIOR, 'hover-element', HoverElement);
-
-const Node = ({ data }: { data: NodeData }) => {
-  const { text, type } = data.data as { text: string; type: string };
-  const isHovered = data.states?.includes('active');
-  const isSelected = data.states?.includes('selected');
-  const color = isHovered ? ACTIVE_COLOR : COLOR_MAP[type];
-
-  const containerStyle: CSSProperties = {
-    width: '100%',
-    height: '100%',
-    background: color,
-    border: `3px solid ${color}`,
-    borderRadius: 16,
-    cursor: 'pointer',
-  };
-
-  if (isSelected) {
-    Object.assign(containerStyle, { border: `3px solid #000` });
-  }
-
-  return h(Flex, { style: containerStyle, align: 'center', justify: 'center' }, [
-    h(Flex, { vertical: true, style: { padding: '8px 16px', textAlign: 'center' }, align: 'center', justify: 'center' }, [
-      type === 'problem' && h(BugOutlined, { style: { color: '#fff', fontSize: 24, marginBottom: 8 } }),
-      h(Text, { style: { color: '#fff', fontWeight: 600, fontSize: 16 } }, text),
-    ]),
-  ]);
-};
+register(ExtensionCategory.NODE, 'vue', VueNode);
 
 const data = ref<GraphData>();
 function setData(json) {
@@ -91,7 +56,7 @@ const options: ComputedRef<GraphOptions> = computed(() => {
       type: 'vue',
       style: (d: NodeData) => {
         const style: NodeData['style'] = {
-          component: h(Node, { data: d }),
+          component: h(PerformanceNode, { data: d }),
           ports: [{ placement: 'top' }, { placement: 'bottom' }],
         };
 

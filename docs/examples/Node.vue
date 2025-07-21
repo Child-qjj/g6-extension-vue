@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DatabaseFilled } from '@ant-design/icons-vue';
 import { Badge, Flex, Input, Tag, Typography } from 'ant-design-vue';
-import { ref, watch, } from 'vue-demi';
+import { ref, watch } from 'vue-demi';
 
 type Datum = {
   id?: string;
