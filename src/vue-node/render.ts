@@ -8,27 +8,36 @@ export type AppContainer = Element & {
 };
 
 export async function render(component: VNode | (() => VNode), container: AppContainer, needsUpdate = false) {
-  if (isVue3) {
-    vueRender(typeof component === 'function' ? component() : component, container);
-    const instance = container[vue_node_mark];
-    if (needsUpdate && instance) {
-      // 手动触发更新
-      instance.component?.update();
+  try {
+    if (isVue3) {
+      const vnode = typeof component === 'function' ? component() : component;
+      if (vnode && (vnode.type || vnode.component)) {
+        vueRender(vnode, container);
+        const instance = container[vue_node_mark];
+        if (needsUpdate && instance) {
+          // 手动触发更新
+          instance.component?.update();
+        }
+      } else {
+        console.warn('Invalid Vue component provided to render');
+      }
+    } else if (isVue2) {
+      if (needsUpdate && container[vue_core_mark]) {
+        const instance = container[vue_core_mark];
+        instance.$options.render = (h: any) => h(component);
+        instance.$forceUpdate();
+        return;
+      }
+      const instance = new Vue2({
+        render: (h: any) => h(component),
+      });
+      instance.$mount(container); // Mount to an in-memory element first
+      // 存储实例引用
+      container[vue_core_mark] = instance;
+      return instance; // Return the Vue 2 instance
     }
-  } else if (isVue2) {
-    if (needsUpdate && container[vue_core_mark]) {
-      const instance = container[vue_core_mark];
-      instance.$options.render = (h: any) => h(component);
-      instance.$forceUpdate();
-      return;
-    }
-    const instance = new Vue2({
-      render: (h: any) => h(component),
-    });
-    instance.$mount(container); // Mount to an in-memory element first
-    // 存储实例引用
-    container[vue_core_mark] = instance;
-    return instance; // Return the Vue 2 instance
+  } catch (error) {
+    console.error('Error rendering Vue component:', error);
   }
 }
 

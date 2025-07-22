@@ -8,11 +8,7 @@
 <script setup lang="ts">
 import type { GraphOptions } from '@antv/g6';
 import { Graph as G6Graph } from '@antv/g6';
-import { onBeforeMount, onMounted, ref, watch, defineOptions } from 'vue-demi';
-
-defineOptions({
-  name: 'GraphComponent'
-});
+import { onBeforeMount, onMounted, ref, watch } from 'vue-demi';
 
 export interface GraphProps {
   options: GraphOptions;

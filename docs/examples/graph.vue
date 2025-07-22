@@ -16,5 +16,5 @@
 </template>
 
 <script setup lang="ts">
-import Graph from '@/components/graph.vue';
+import Graph from '@/components/graph-component.vue';
 </script>

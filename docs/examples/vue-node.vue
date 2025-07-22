@@ -49,7 +49,7 @@ import { ExtensionCategory, register } from '@antv/g6';
 import { VueNode as VueNodeExtension } from 'g6-extension-vue';
 import { Button, Form, Layout, Select, Table } from 'ant-design-vue';
 import { onMounted, reactive, ref, h } from 'vue-demi';
-import Graph from '@/components/graph.vue';
+import Graph from '@/components/graph-component.vue';
 import Node from './Node.vue';
 
 type Datum = {
