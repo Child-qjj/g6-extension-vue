@@ -1,7 +1,7 @@
 import type { DisplayObjectConfig, HTMLStyleProps as GHTMLStyleProps } from '@antv/g';
 import type { BaseNodeStyleProps, HTMLStyleProps } from '@antv/g6';
 import { HTML } from '@antv/g6';
-import type { VNode } from 'vue';
+import type { VNode } from 'vue-demi';
 import { render, unmount } from './render';
 
 export interface VueNodeStyleProps extends BaseNodeStyleProps {

@@ -1,20 +1,39 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "declaration": true,
     "skipLibCheck": true,
+    "sourceMap": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
+    "pretty": true,
+    "moduleResolution": "Node",
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "strictNullChecks": false,
     "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ES6",
+    "outDir": "lib",
     "baseUrl": "./",
     "paths": {
-      "@@/*": [".dumi/tmp/*"],
-      "g6-extension-vue": ["src"],
-      "g6-extension-vue/*": ["src/*", "*"],
-      "@/*": ["src/*"],
-    }
+      "@@/*": [
+        ".dumi/tmp/*"
+      ],
+      "g6-extension-vue": [
+        "./src/index.ts"
+      ],
+      "@/*": [
+        "src/*"
+      ],
+    },
+    "types": [
+      "node"
+    ]
   },
-  "include": [".dumirc.ts", "src/**/*"]
+  "include": [
+    ".dumirc.ts",
+    "src/**/*"
+  ]
 }
