@@ -53,9 +53,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^2.1.1
         version: 2.1.9(vitest@2.1.9(@types/node@20.5.1)(happy-dom@15.11.7)(less@4.3.0)(lightningcss@1.22.1)(sass@1.89.2)(terser@5.43.1))
-      '@vue-styled-components/core':
-        specifier: ^1.13.1
-        version: 1.13.1(vue@3.5.17(typescript@5.5.4))
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.4.6
@@ -2334,11 +2331,6 @@ packages:
 
   '@volar/typescript@2.4.15':
     resolution: {integrity: sha512-2aZ8i0cqPGjXb4BhkMsPYDkkuc2ZQ6yOpqwAuNwUoncELqoy5fRgOQtLR9gB0g902iS0NAkvpIzs27geVyVdPg==}
-
-  '@vue-styled-components/core@1.13.1':
-    resolution: {integrity: sha512-pJ/oEmIwXBDJSe6c/KWgklswRy9oh+sSISw/OWXiHirGpoA6bvpQOvepXbtCSCJlSNTBotykIKIkSO88+qZGaA==}
-    peerDependencies:
-      vue: '>=3.2.0'
 
   '@vue/babel-helper-vue-transform-on@1.4.0':
     resolution: {integrity: sha512-mCokbouEQ/ocRce/FpKCRItGo+013tHg7tixg3DUNS+6bmIchPt66012kBMm476vyEIJPafrvOf4E5OYj3shSw==}
@@ -10174,12 +10166,6 @@ snapshots:
       '@volar/language-core': 2.4.15
       path-browserify: 1.0.1
       vscode-uri: 3.1.0
-
-  '@vue-styled-components/core@1.13.1(vue@3.5.17(typescript@5.5.4))':
-    dependencies:
-      lodash-es: 4.17.21
-      stylis: 4.3.6
-      vue: 3.5.17(typescript@5.5.4)
 
   '@vue/babel-helper-vue-transform-on@1.4.0': {}
 
