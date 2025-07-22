@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "target": "ES6",
-    "outDir": "lib",
+    "outDir": "dist",
     "baseUrl": "./",
     "paths": {
       "@@/*": [
