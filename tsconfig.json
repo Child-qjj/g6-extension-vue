@@ -22,8 +22,7 @@
       "@@/*": [".dumi/tmp/*"],
       "g6-extension-vue": ["./src/index.ts"],
       "@/*": ["src/*"]
-    },
-    "types": ["node"]
+    }
   },
   "include": [".dumirc.ts", "src/**/*"],
   "exclude": ["node_modules", ".dumi"]
