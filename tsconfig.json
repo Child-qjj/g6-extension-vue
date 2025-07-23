@@ -19,22 +19,12 @@
     "outDir": "dist",
     "baseUrl": "./",
     "paths": {
-      "@@/*": [
-        ".dumi/tmp/*"
-      ],
-      "g6-extension-vue": [
-        "./src/index.ts"
-      ],
-      "@/*": [
-        "src/*"
-      ],
+      "@@/*": [".dumi/tmp/*"],
+      "g6-extension-vue": ["./src/index.ts"],
+      "@/*": ["src/*"]
     },
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    ".dumirc.ts",
-    "src/**/*"
-  ]
+  "include": [".dumirc.ts", "src/**/*"],
+  "exclude": ["node_modules", ".dumi"]
 }

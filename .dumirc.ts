@@ -1,5 +1,4 @@
 import { defineConfig } from 'dumi';
-import { repository } from './package.json';
 import path from 'path';
 
 export default defineConfig({
@@ -12,16 +11,16 @@ export default defineConfig({
     name: 'Vue G6 Extension',
     footer: 'Open-source MIT Licensed | Copyright © 2025-present',
     socialLinks: {
-      github: repository, // GitHub 地址
+      github: 'https://github.com/Child-qjj/g6-extension-vue', // GitHub 地址
     },
     nav: {
       'zh-CN': [
         {
           link: '/examples',
-          title: '图表示例'
+          title: '图表示例',
         },
-      ]
-    }
+      ],
+    },
   },
   alias: {
     'g6-extension-vue': path.resolve(__dirname, 'src/index.ts'),
