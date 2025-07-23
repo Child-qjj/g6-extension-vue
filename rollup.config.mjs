@@ -27,5 +27,6 @@ export default [
       terser(),
       ...(isBundleVis ? [visualizer()] : []),
     ],
+    external: ['vue','@antv/g6'],
   },
 ];

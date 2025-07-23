@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "This extension allows you to define G6 node by Vue component and JSX syntax.",
   "scripts": {
-    "build": "rollup -c",
-    "build:watch": "rollup -c --watch",
+    "build": "run-p build:*",
     "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib -p tsconfig.build.json",
     "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm -p tsconfig.build.json",
     "build:umd": "rimraf ./dist && rollup -c",
@@ -19,7 +18,9 @@
     "start": "npm run dev",
     "test": "vitest",
     "test:cov": "vitest --coverage",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "tag": "node ./scripts/tag.mjs",
+    "version": "node ./scripts/version.mjs"
   },
   "authors": [
     "Child-qjj <qiujunjie99@gmail.com>"
@@ -40,11 +41,6 @@
   "files": [
     "dist"
   ],
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
   "lint-staged": {
     "*.{md,json}": [
       "prettier --write --no-error-on-unmatched-pattern"
@@ -63,7 +59,7 @@
     ]
   },
   "publishConfig": {
-    "access": "public"
+    "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
     "@antv/g6": ">=5.0.0",
@@ -90,6 +86,7 @@
     "@vitest/coverage-v8": "^2.1.1",
     "@vue/test-utils": "^2.4.6",
     "ant-design-vue": "^4.2.6",
+    "chalk": "^5.4.1",
     "dumi": "^2.4.21",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.17.0",
@@ -97,11 +94,14 @@
     "husky": "^8.0.1",
     "less": "^4.2.0",
     "lint-staged": "^13.0.3",
+    "npm-run-all": "^4.1.5",
+    "open": "^10.2.0",
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.0.0",
     "prettier-plugin-packagejson": "^2.2.18",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "rimraf": "^6.0.1",
     "rollup": "^4.45.1",
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-polyfill-node": "^0.13.0",
