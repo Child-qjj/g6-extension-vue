@@ -32,6 +32,7 @@
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx,vue}\"",
     "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build",
+    "publish": "pnpm publish -r --publish-branch v0.0.1",
     "start": "npm run dev",
     "tag": "node ./scripts/tag.mjs",
     "test": "vitest --run",
