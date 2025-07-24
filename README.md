@@ -1,6 +1,6 @@
 # G6 Extension Vue
 
-一个用于在 G6 图可视化中使用 Vue 组件的扩展库，类似于 `@antv/g6-extension-react`。
+一个用于在 G6 图可视化中使用 Vue 组件的扩展库，基于 `@antv/g6-extension-react`。
 
 ## 特性
 
