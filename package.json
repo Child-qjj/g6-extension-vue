@@ -2,9 +2,17 @@
   "name": "g6-extension-vue",
   "version": "0.0.1beta",
   "description": "This extension allows you to define G6 node by Vue component and JSX syntax.",
+  "keywords": [
+    "antv",
+    "g6",
+    "extension",
+    "vue",
+    "node"
+  ],
+  "homepage": "https://child-qjj.github.io/g6-extension-vue/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Child-qjj/g6-extension-vue.git"
+    "url": "https://github.com/Child-qjj/g6-extension-vue"
   },
   "license": "MIT",
   "author": "Child-qjj <qiujunjie99@gmail.com>",
@@ -32,7 +40,7 @@
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx,vue}\"",
     "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build",
-    "publish": "pnpm publish -r --publish-branch v0.0.1beta",
+    "publish": "pnpm publish -r --publish-branch v0.0.1",
     "start": "npm run dev",
     "tag": "node ./scripts/tag.mjs",
     "test": "vitest --run",
