@@ -1,6 +1,6 @@
 {
   "name": "g6-extension-vue",
-  "version": "0.0.1",
+  "version": "0.0.1beta",
   "description": "This extension allows you to define G6 node by Vue component and JSX syntax.",
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx,vue}\"",
     "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build",
-    "publish": "pnpm publish -r --publish-branch v0.0.1",
+    "publish": "pnpm publish -r --publish-branch v0.0.1beta",
     "start": "npm run dev",
     "tag": "node ./scripts/tag.mjs",
     "test": "vitest --run",
@@ -121,6 +121,7 @@
     "vue": "^2.0.0 || >=3.0.0"
   },
   "publishConfig": {
+    "access":  "public",
     "registry": "https://registry.npmjs.org/"
   }
 }
