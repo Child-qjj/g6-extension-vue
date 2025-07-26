@@ -1,6 +1,6 @@
 {
   "name": "g6-extension-vue",
-  "version": "0.0.1beta",
+  "version": "0.0.11",
   "description": "This extension allows you to define G6 node by Vue component and JSX syntax.",
   "keywords": [
     "antv",
@@ -129,7 +129,7 @@
     "vue": "^2.0.0 || >=3.0.0"
   },
   "publishConfig": {
-    "access":  "public",
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   }
 }
