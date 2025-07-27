@@ -2,7 +2,8 @@
 
 [![NPM Package][npm]][npm-url] [![Build Size][build-size]][build-size-url] [![NPM Downloads][npm-downloads]][npmtrends-url]
 
-一个用于在 G6 图可视化中使用 Vue 组件的扩展库，参照 [`@antv/g6-extension-react`](https://www.npmjs.com/package/@antv/g6-extension-react)。
+This extension allows you to define G6 node by Vue component,
+It's inspired by [`@antv/g6-extension-react`](https://www.npmjs.com/package/@antv/g6-extension-react)。
 
 ## 特性
 
