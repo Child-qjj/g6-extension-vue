@@ -1,41 +1,41 @@
 # G6 Extension Vue
 
-**English** | [中文](./README-zh.md)
+[English](./README.md) | **中文**
 
 [![NPM Package][npm]][npm-url] [![Build Size][build-size]][build-size-url] [![NPM Downloads][npm-downloads]][npmtrends-url]
 
-This extension allows you to define G6 nodes using Vue components.
-It's inspired by [`@antv/g6-extension-react`](https://www.npmjs.com/package/@antv/g6-extension-react).
+一个用于在 G6 图可视化中使用 Vue 组件的扩展库。
+参照 [`@antv/g6-extension-react`](https://www.npmjs.com/package/@antv/g6-extension-react) 实现。
 
-## Features
+## 特性
 
-- 🎯 **Vue Node Support**: Use Vue components as G6 nodes
-- 🔧 **Vue 2/3 Compatible**: Support both Vue 2 and Vue 3
-- 📦 **TypeScript Support**: Full type definitions
+- 🎯 **Vue 节点支持**: 使用 Vue 组件作为 G6 节点
+- 🔧 **Vue 2/3 兼容**: 同时支持 Vue 2 和 Vue 3
+- 📦 **TypeScript 支持**: 完整的类型定义
 
-## Usage
+## 使用方法
 
-### 1. Install
+### 1. 安装
 
 ```bash
 npm install g6-extension-vue
-# or
+# 或
 yarn add g6-extension-vue
-# or
+# 或
 pnpm add g6-extension-vue
 ```
 
-### 2. Import and Register
+### 2. 导入和注册
 
 ```js
 import { onMounted, defineComponent } from 'vue';
 import { VueNode } from 'g6-extension-vue';
 import { ExtensionCategory, register } from '@antv/g6';
 
-register(ExtensionCategory.NODE, 'vue', VueNode); // or in onMounted
+register(ExtensionCategory.NODE, 'vue', VueNode); // 或在 onMounted 中注册
 ```
 
-### 3. Define Node
+### 3. 定义节点
 
 Vue Composition API:
 
@@ -45,74 +45,74 @@ props: { data: { type: Object, default: () => ({}), }, }, setup(props) { return
 () => { return h('div', { class: 'vue-node', }, props.data.label); } } });
 ```
 
-Vue Functional component:
+Vue 函数式组件:
 
 ```vue
 import { h } from 'vue'; export default function VueNode(props) { return
 h('div', { class: 'vue-node', }, props.data.label); }
 ```
 
-### 4. Use Node
+### 4. 使用节点
 
 ```js
 const graph = new Graph({
-  // ... other options
+  // ... 其他选项
   node: {
     type: 'vue',
     style: {
-      component: (data) => <VueNode data={data} />, // data will be passed to VueNode, and refresh when data changes
+      component: (data) => <VueNode data={data} />, // data 会传递给 VueNode，并在数据变化时刷新
     },
   },
 });
 ```
 
-## Q&A
+## 常见问题
 
-### 1. Why the watch props is not working?
+### 1. 为什么 watch props 不起作用？
 
-VueNode will refresh when g6 node property changes.(hover、click、drag、etc.)
-And the props pass to VueNode will not be reactive.you can just use props in the template directly.It will display the latest value of props.
+VueNode 会在节点属性发生变化时刷新（悬停、点击、拖拽等）。
+传递给 VueNode 的 props 不是响应式的，你可以直接在模板中使用 props，它会显示 props 的最新值。
 
-## Development
+## 开发
 
 ```bash
-# Install dependencies
+# 安装依赖
 npm install
 
-# Development mode
+# 开发模式
 npm run dev
 
-# Build
+# 构建
 npm run build
 
-# Test
+# 测试
 npm run test
 
-# Lint
+# 代码检查
 npm run lint
 ```
 
-## Compatibility
+## 兼容性
 
 - Vue 2.6+
 - Vue 3.0+
 - G6 5.0+
 
-## License
+## 许可证
 
 MIT License @Child-qjj
 
-## Contributing
+## 贡献
 
-Welcome to submit Issues and Pull Requests!
+欢迎提交 Issue 和 Pull Request！
 
-## Changelog
+## 更新日志
 
 ### v0.0.11
 
-- Initial release
-- Support VueNode
-- Vue 2/3 compatibility support
+- 初始版本发布
+- 支持 VueNode
+- Vue 2/3 兼容性支持
 
 [npm]: https://img.shields.io/npm/v/g6-extension-vue.svg
 [npm-url]: https://www.npmjs.com/package/g6-extension-vue
