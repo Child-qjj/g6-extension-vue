@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { ExtensionCategory, register } from '@antv/g6';
 import { VueNode } from 'g6-extension-vue';
-import data from './euro-cup.json';
+import data from '../euro-cup.json';
 import Graph from './graph-component.vue';
 import PlayerNode from './playerNode.vue';
 import { onMounted, ref,h } from 'vue';
