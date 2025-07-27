@@ -1,116 +1,74 @@
 # G6 Extension Vue
 
-一个用于在 G6 图可视化中使用 Vue 组件的扩展库，基于 `@antv/g6-extension-react`。
+[![NPM Package][npm]][npm-url] [![Build Size][build-size]][build-size-url] [![NPM Downloads][npm-downloads]][npmtrends-url]
+
+一个用于在 G6 图可视化中使用 Vue 组件的扩展库，参照 [`@antv/g6-extension-react`](https://www.npmjs.com/package/@antv/g6-extension-react)。
 
 ## 特性
 
 - 🎯 **Vue 节点支持**: 使用 Vue 组件作为 G6 节点
 - 🔧 **Vue 2/3 兼容**: 同时支持 Vue 2 和 Vue 3
 - 📦 **TypeScript 支持**: 完整的类型定义
-- 🚀 **高性能**: 优化的渲染和更新机制
 
-## 安装
+## Usage
+
+### 1. Install
 
 ```bash
 npm install g6-extension-vue
-# 或
+# or
 yarn add g6-extension-vue
-# 或
+# or
 pnpm add g6-extension-vue
 ```
 
-## 基础用法
+### 2. Import and Register
 
-### 1. Vue 节点 (VueNode)
-
-使用 Vue 组件作为 G6 节点：
-
-```vue
-<template>
-  <div>
-    <Graph :options="options" />
-  </div>
-</template>
-
-<script setup>
-import { Graph } from '@antv/g6';
+```js
+import { onMounted, defineComponent } from 'vue';
 import { VueNode } from 'g6-extension-vue';
 import { ExtensionCategory, register } from '@antv/g6';
-import { h } from 'vue';
 
-// 定义节点组件
-const NodeComponent = ({ data }) => {
-  return h('div', {
-    style: {
-      padding: '10px',
-      background: '#fff',
-      border: '1px solid #ddd',
-      borderRadius: '4px',
-    }
-  }, [
-    h('h3', data.name),
-    h('p', `Status: ${data.status}`)
-  ]);
-};
-
-// 注册节点类型
-register(ExtensionCategory.NODE, 'vue', VueNode);
-
-const options = {
-  data: {
-    nodes: [
-      {
-        id: 'node1',
-        data: { name: 'Node 1', status: 'active' },
-        style: {
-          component: NodeComponent,
-          x: 100,
-          y: 100,
-        },
-      },
-    ],
-  },
-  node: {
-    type: 'vue',
-  },
-};
-</script>
+register(ExtensionCategory.NODE, 'vue', VueNode); // or in onMounted
 ```
 
-## API 参考
+### 3. Define Node
 
-### VueNode
+Vue Composition API:
 
-用于渲染 Vue 组件的节点类型。
+```vue
+import { defineComponent, h } from 'vue'; export default defineComponent({
+props: { data: { type: Object, default: () => ({}), }, }, setup(props){ return
+() => { return h('div', { class: 'vue-node', }, props.data.label); } } });
+```
 
-**属性:**
-- `component`: Vue 组件或渲染函数
-- 其他标准 G6 节点属性
+Vue Functional component:
 
-### 工具函数
+```vue
+import { h } from 'vue'; export default function VueNode(props) { return
+h('div', { class: 'vue-node', }, props.data.label); }
+```
 
-#### render(component, container, props?)
+### 4. Use Node
 
-手动渲染 Vue 组件到指定容器。
+```js
+const graph = new Graph({
+  // ... other options
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={data} />, // data will be passed to VueNode, and refresh when data changes
+    },
+  },
+});
+```
 
-**参数:**
-- `component`: Vue 组件
-- `container`: DOM 容器
-- `props`: 组件属性
+## Q&A
 
-#### unmount(container)
+### 1. Why the watch props is not working?
 
-卸载指定容器中的 Vue 组件。
-
-**参数:**
-- `container`: DOM 容器
-
-## 示例
-
-查看 `docs/examples/` 目录下的示例文件：
-
-- `vue-node.vue`: Vue 节点示例
-- `graph.vue`: 基础图示例
+VueNode will refresh when `data` property of node changes.(hover、click、drag、etc.)
+And the props pass to VueNode will not be reactive.you can just use props in the template directly.It will display the latest value of props.
 
 ## 开发
 
@@ -147,8 +105,15 @@ MIT License @Child-qjj
 
 ## 更新日志
 
-### v0.0.1
+### v0.0.11
 
 - 初始版本发布
 - 支持 VueNode
 - Vue 2/3 兼容性支持
+
+[npm]: https://img.shields.io/npm/v/g6-extension-vue.svg
+[npm-url]: https://www.npmjs.com/package/g6-extension-vue
+[build-size]: https://img.shields.io/bundlephobia/minzip/g6-extension-vue
+[build-size-url]: https://bundlephobia.com/package/g6-extension-vue
+[npm-downloads]: https://img.shields.io/npm/dm/g6-extension-vue.svg
+[npmtrends-url]: https://npmtrends.com/g6-extension-vue
