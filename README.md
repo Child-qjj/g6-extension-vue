@@ -39,22 +39,41 @@ register(ExtensionCategory.NODE, 'vue', VueNode); // or in onMounted
 
 Vue Composition API:
 
-```vue
-import { defineComponent, h } from 'vue'; export default defineComponent({
-props: { data: { type: Object, default: () => ({}), }, }, setup(props) { return
-() => { return h('div', { class: 'vue-node', }, props.data.label); } } });
+```ts
+import { defineComponent, h } from 'vue';
+export default defineComponent({
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  setup(props) {
+    return () => {
+      return h(
+        'div',
+        {
+          class: 'vue-node',
+        },
+        props.data.label,
+      );
+    };
+  },
+});
 ```
 
 Vue Functional component:
 
-```vue
-import { h } from 'vue'; export default function VueNode(props) { return
-h('div', { class: 'vue-node', }, props.data.label); }
+```tsx
+export default function VueNode(props) {
+  return <div class="vue-node">
+    {props.data.label}
+  </div>
 ```
 
 ### 4. Use Node
 
-```js
+```ts
 const graph = new Graph({
   // ... other options
   node: {

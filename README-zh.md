@@ -39,22 +39,41 @@ register(ExtensionCategory.NODE, 'vue', VueNode); // 或在 onMounted 中注册
 
 Vue Composition API:
 
-```vue
-import { defineComponent, h } from 'vue'; export default defineComponent({
-props: { data: { type: Object, default: () => ({}), }, }, setup(props) { return
-() => { return h('div', { class: 'vue-node', }, props.data.label); } } });
+```tsx
+import { defineComponent, h } from 'vue';
+
+export default defineComponent({
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  setup(props) {
+    return () => {
+      return h(
+        'div',
+        {
+          class: 'vue-node',
+        },
+        props.data.label,
+      );
+    };
+  },
+});
 ```
 
 Vue 函数式组件:
 
-```vue
-import { h } from 'vue'; export default function VueNode(props) { return
-h('div', { class: 'vue-node', }, props.data.label); }
+```tsx
+export default function VueNode(props) {
+  return <div class="vue-node">{props.data.label}</div>;
+}
 ```
 
 ### 4. 使用节点
 
-```js
+```ts
 const graph = new Graph({
   // ... 其他选项
   node: {
