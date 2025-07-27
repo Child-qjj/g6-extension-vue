@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed } from 'vue-demi';
+import { PropType, computed } from 'vue';
 
 const props = defineProps({
   playerInfo: {
