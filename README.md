@@ -125,14 +125,6 @@ MIT License @Child-qjj
 
 Welcome to submit Issues and Pull Requests!
 
-## Changelog
-
-### v0.0.11
-
-- Initial release
-- Support VueNode
-- Vue 2/3 compatibility support
-
 [npm]: https://img.shields.io/npm/v/g6-extension-vue.svg
 [npm-url]: https://www.npmjs.com/package/g6-extension-vue
 [build-size]: https://img.shields.io/bundlephobia/minzip/g6-extension-vue

@@ -125,14 +125,6 @@ MIT License @Child-qjj
 
 欢迎提交 Issue 和 Pull Request！
 
-## 更新日志
-
-### v0.0.11
-
-- 初始版本发布
-- 支持 VueNode
-- Vue 2/3 兼容性支持
-
 [npm]: https://img.shields.io/npm/v/g6-extension-vue.svg
 [npm-url]: https://www.npmjs.com/package/g6-extension-vue
 [build-size]: https://img.shields.io/bundlephobia/minzip/g6-extension-vue
