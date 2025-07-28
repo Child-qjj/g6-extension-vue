@@ -4,7 +4,7 @@ hero:
   description: This extension allows you to define G6 node by Vue component and JSX syntax.
   actions:
     - text: Examples
-      link: /examples
+      link: /examples/euro-cup
     # - text: Vue
     #   link: /
 # features:
@@ -18,5 +18,3 @@ hero:
 #     emoji: 🚀
 #     description: Put ! description here
 ---
-
-<!-- g6-extension-vue -->

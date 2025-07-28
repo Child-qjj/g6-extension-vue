@@ -212,4 +212,29 @@ describe('VueNode', () => {
       expect(container.innerHTML).toContain('Test Content');
     });
   });
+
+  describe('Memory management', () => {
+    it('should clean up properly on unmount', async () => {
+      const TestComponent = {
+        data() {
+          return { mounted: true };
+        },
+        beforeUnmount() {
+          // Vue 3
+          this.mounted = false;
+        },
+        beforeDestroy() {
+          // Vue 2
+          this.mounted = false;
+        },
+        template: '<div>{{ mounted ? "Mounted" : "Unmounted" }}</div>',
+      };
+
+      await render(h(TestComponent), container);
+      expect(container.innerHTML).toContain('Mounted');
+
+      await unmount(container);
+      expect(container.innerHTML).toBe('');
+    });
+  });
 });
