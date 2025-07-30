@@ -3,6 +3,8 @@ import path from 'node:path';
 
 export default defineConfig({
   apiParser: {},
+  base: '/g6-extension-vue/',
+  publicPath: '/g6-extension-vue/',
   resolve: {
     entryFile: './api/index.ts',
   },
