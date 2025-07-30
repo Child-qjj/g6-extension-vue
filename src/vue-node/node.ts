@@ -1,4 +1,7 @@
-import type { DisplayObjectConfig, HTMLStyleProps as GHTMLStyleProps } from '@antv/g';
+import type {
+  DisplayObjectConfig,
+  HTMLStyleProps as GHTMLStyleProps,
+} from '@antv/g';
 import type { BaseNodeStyleProps, HTMLStyleProps } from '@antv/g6';
 import { HTML } from '@antv/g6';
 import type { VNode } from 'vue-demi';
@@ -37,7 +40,11 @@ export class VueNode extends HTML {
   public attributeChangedCallback(name: any, oldValue: any, newValue: any) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (name === 'component' && oldValue !== newValue) {
-      render((this.attributes as unknown as VueNodeStyleProps).component, this.getDomElement(), true);
+      render(
+        (this.attributes as unknown as VueNodeStyleProps).component,
+        this.getDomElement(),
+        true,
+      );
     }
   }
 

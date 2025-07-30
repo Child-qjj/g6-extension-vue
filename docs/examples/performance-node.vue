@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue-demi';
+import { computed } from 'vue';
 import { BugOutlined } from '@ant-design/icons-vue';
 import type { NodeData } from '@antv/g6';
 
