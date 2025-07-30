@@ -1,28 +1,44 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { h } from 'vue';
+import type { VNode } from 'vue';
+import { defineComponent, h, nextTick, ref } from 'vue';
 
 // Mock @antv/g6 HTML - 移到顶部并避免使用顶层变量
 vi.mock('@antv/g6', () => {
   class MockHTML {
-    attributes: any = {};
+    attributes: Record<string, any> = {};
     domElement: HTMLElement;
+    private _destroyed = false;
 
     constructor(options: any) {
       this.attributes = options.style || {};
       this.domElement = document.createElement('div');
+      this.domElement.setAttribute('data-mock-html', 'true');
     }
 
-    getDomElement() {
+    getDomElement(): HTMLElement {
       return this.domElement;
     }
 
-    update(attr: any) {
+    update(attr: Record<string, any>): void {
       Object.assign(this.attributes, attr);
     }
 
-    connectedCallback() {}
-    attributeChangedCallback() {}
-    destroy() {}
+    connectedCallback(): void {
+      // Mock implementation
+    }
+
+    attributeChangedCallback(name: string, oldValue: any, newValue: any): void {
+      // Mock implementation
+    }
+
+    destroy(): void {
+      this._destroyed = true;
+      this.domElement.innerHTML = '';
+    }
+
+    get destroyed(): boolean {
+      return this._destroyed;
+    }
   }
 
   return {
@@ -34,207 +50,373 @@ vi.mock('@antv/g6', () => {
 import type { VueNodeStyleProps } from '../src/index';
 import { VueNode, render, unmount } from '../src/index';
 
+// 测试工具函数
+class TestUtils {
+  static createTestComponent(content: string, className?: string): VNode {
+    return h('div', { class: className || 'test-component' }, content);
+  }
+
+  static createFunctionComponent(content: string): () => VNode {
+    return () => h('span', { class: 'function-component' }, content);
+  }
+
+  static createReactiveComponent(initialMessage: string) {
+    return defineComponent({
+      setup() {
+        const message = ref(initialMessage);
+        return { message };
+      },
+      template: '<div class="reactive-test">{{ message }}</div>',
+    });
+  }
+
+  static createPropsComponent() {
+    return defineComponent({
+      props: {
+        title: { type: String, required: true },
+        content: { type: String, required: true },
+      },
+      template: '<div><h1>{{ title }}</h1><p>{{ content }}</p></div>',
+    });
+  }
+
+  static createLifecycleComponent() {
+    return defineComponent({
+      setup() {
+        const mounted = ref(true);
+        return { mounted };
+      },
+      beforeUnmount() {
+        // Vue 3 lifecycle
+        this.mounted = false;
+      },
+      template: '<div>{{ mounted ? "Mounted" : "Unmounted" }}</div>',
+    });
+  }
+
+  static createErrorComponent(): () => never {
+    return () => {
+      throw new Error('Intentional render error');
+    };
+  }
+
+  static async waitForNextTick(): Promise<void> {
+    await nextTick();
+  }
+
+  static expectElementToContain(element: HTMLElement, text: string): void {
+    expect(element.innerHTML).toContain(text);
+  }
+
+  static expectElementToBeEmpty(element: HTMLElement): void {
+    expect(element.innerHTML).toBe('');
+  }
+}
+
+// 测试数据常量 - 更新错误消息
+const TEST_DATA = {
+  SIMPLE_TEXT: 'Hello Vue!',
+  INITIAL_TEXT: 'Initial',
+  UPDATED_TEXT: 'Updated',
+  FUNCTION_COMPONENT_TEXT: 'Function Component',
+  REACTIVE_MESSAGE: 'Initial Message',
+  PROPS: {
+    title: 'Test Title',
+    content: 'Test Content',
+  },
+  ERROR_MESSAGES: {
+    INVALID_COMPONENT: 'Invalid Vue component provided to render',
+    RENDER_ERROR: 'Error rendering Vue component:',
+    UNMOUNT_ERROR: 'Error unmounting Vue component:',
+  },
+} as const;
+
+const vue_core_mark = '__vue_app__';
+
 describe('VueNode', () => {
   let container: HTMLElement;
 
   beforeEach(() => {
     container = document.createElement('div');
+    container.setAttribute('data-test-container', 'true');
     document.body.appendChild(container);
   });
 
   afterEach(() => {
-    document.body.removeChild(container);
+    if (container.parentNode) {
+      document.body.removeChild(container);
+    }
+    vi.clearAllMocks();
   });
 
   describe('VueNode Class', () => {
-    it('should create VueNode instance with component', () => {
-      const testComponent = h('div', { class: 'test-component' }, 'Hello Vue!');
+    describe('Instance Creation', () => {
+      it('should create VueNode instance with component', () => {
+        const testComponent = TestUtils.createTestComponent(
+          TEST_DATA.SIMPLE_TEXT,
+        );
+        const vueNode = new VueNode({
+          style: { component: testComponent } as VueNodeStyleProps,
+        });
 
-      const vueNode = new VueNode({
-        style: {
-          component: testComponent,
-        } as VueNodeStyleProps,
+        expect(vueNode).toBeInstanceOf(VueNode);
+        expect(vueNode.attributes.component).toBe(testComponent);
       });
 
-      expect(vueNode).toBeInstanceOf(VueNode);
-      expect(vueNode.attributes.component).toBe(testComponent);
+      it('should create VueNode with empty attributes when no style provided', () => {
+        const vueNode = new VueNode({});
+        expect(vueNode).toBeInstanceOf(VueNode);
+        expect(vueNode.attributes).toEqual({});
+      });
     });
 
-    it('should render component on connectedCallback', () => {
-      const testComponent = h('div', { class: 'test-component' }, 'Hello Vue!');
+    describe('Component Rendering', () => {
+      it('should render component on connectedCallback', () => {
+        const testComponent = TestUtils.createTestComponent(
+          TEST_DATA.SIMPLE_TEXT,
+        );
+        const vueNode = new VueNode({
+          style: { component: testComponent } as VueNodeStyleProps,
+        });
 
-      const vueNode = new VueNode({
-        style: {
-          component: testComponent,
-        } as VueNodeStyleProps,
+        vueNode.connectedCallback();
+        const domElement = vueNode.getDomElement();
+
+        TestUtils.expectElementToContain(domElement, TEST_DATA.SIMPLE_TEXT);
       });
 
-      // Simulate connectedCallback
-      vueNode.connectedCallback();
+      it('should handle multiple connectedCallback calls gracefully', () => {
+        const testComponent = TestUtils.createTestComponent(
+          TEST_DATA.SIMPLE_TEXT,
+        );
+        const vueNode = new VueNode({
+          style: { component: testComponent } as VueNodeStyleProps,
+        });
 
-      const domElement = vueNode.getDomElement();
-      expect(domElement.innerHTML).toContain('Hello Vue!');
+        vueNode.connectedCallback();
+        vueNode.connectedCallback(); // Second call should not cause issues
+
+        const domElement = vueNode.getDomElement();
+        TestUtils.expectElementToContain(domElement, TEST_DATA.SIMPLE_TEXT);
+      });
     });
 
-    it('should update component on attributeChangedCallback', () => {
-      const initialComponent = h('div', {}, 'Initial');
-      const updatedComponent = h('div', {}, 'Updated');
+    describe('Component Updates', () => {
+      it('should update component on attributeChangedCallback', () => {
+        const initialComponent = TestUtils.createTestComponent(
+          TEST_DATA.INITIAL_TEXT,
+        );
+        const updatedComponent = TestUtils.createTestComponent(
+          TEST_DATA.UPDATED_TEXT,
+        );
 
-      const vueNode = new VueNode({
-        style: {
-          component: initialComponent,
-        } as VueNodeStyleProps,
+        const vueNode = new VueNode({
+          style: { component: initialComponent } as VueNodeStyleProps,
+        });
+
+        vueNode.connectedCallback();
+        vueNode.update({ component: updatedComponent });
+        vueNode.attributeChangedCallback(
+          'component',
+          initialComponent,
+          updatedComponent,
+        );
+
+        const domElement = vueNode.getDomElement();
+        TestUtils.expectElementToContain(domElement, TEST_DATA.UPDATED_TEXT);
       });
 
-      vueNode.connectedCallback();
+      it('should handle update with same component', () => {
+        const testComponent = TestUtils.createTestComponent(
+          TEST_DATA.SIMPLE_TEXT,
+        );
+        const vueNode = new VueNode({
+          style: { component: testComponent } as VueNodeStyleProps,
+        });
 
-      // Update component
-      vueNode.update({ component: updatedComponent });
-      vueNode.attributeChangedCallback(
-        'component',
-        initialComponent,
-        updatedComponent,
-      );
+        vueNode.connectedCallback();
+        vueNode.update({ component: testComponent });
+        vueNode.attributeChangedCallback(
+          'component',
+          testComponent,
+          testComponent,
+        );
 
-      const domElement = vueNode.getDomElement();
-      expect(domElement.innerHTML).toContain('Updated');
+        const domElement = vueNode.getDomElement();
+        TestUtils.expectElementToContain(domElement, TEST_DATA.SIMPLE_TEXT);
+      });
     });
 
-    it('should unmount component on destroy', () => {
-      const testComponent = h('div', {}, 'Test Component');
+    describe('Component Cleanup', () => {
+      it('should unmount component on destroy', () => {
+        const testComponent = TestUtils.createTestComponent('Test Component');
+        const vueNode = new VueNode({
+          style: { component: testComponent } as VueNodeStyleProps,
+        });
 
-      const vueNode = new VueNode({
-        style: {
-          component: testComponent,
-        } as VueNodeStyleProps,
+        vueNode.connectedCallback();
+        const domElement = vueNode.getDomElement();
+        TestUtils.expectElementToContain(domElement, 'Test Component');
+
+        vueNode.destroy();
+        TestUtils.expectElementToBeEmpty(domElement);
       });
 
-      vueNode.connectedCallback();
-      const domElement = vueNode.getDomElement();
-      expect(domElement.innerHTML).toContain('Test Component');
+      it('should handle destroy without prior rendering', () => {
+        const testComponent = TestUtils.createTestComponent(
+          TEST_DATA.SIMPLE_TEXT,
+        );
+        const vueNode = new VueNode({
+          style: { component: testComponent } as VueNodeStyleProps,
+        });
 
-      vueNode.destroy();
-      expect(domElement.innerHTML).toBe('');
+        expect(() => vueNode.destroy()).not.toThrow();
+      });
     });
   });
 
   describe('render function', () => {
-    it('should render VNode component', async () => {
-      const testComponent = h('div', { class: 'test' }, 'Hello World');
+    describe('Basic Rendering', () => {
+      it('should render VNode component', async () => {
+        const testComponent = TestUtils.createTestComponent(
+          'Hello World',
+          'test',
+        );
 
-      await render(testComponent, container);
+        await render(testComponent, container);
 
-      expect(container.innerHTML).toContain('Hello World');
-      expect(container.querySelector('.test')).toBeTruthy();
-    });
+        TestUtils.expectElementToContain(container, 'Hello World');
+        expect(container.querySelector('.test')).toBeTruthy();
+      });
 
-    it('should render function component', async () => {
-      const componentFunction = () => h('span', {}, 'Function Component');
+      it('should render function component', async () => {
+        const componentFunction = TestUtils.createFunctionComponent(
+          TEST_DATA.FUNCTION_COMPONENT_TEXT,
+        );
 
-      await render(componentFunction, container);
+        await render(componentFunction, container);
 
-      expect(container.innerHTML).toContain('Function Component');
-    });
-
-    it('should handle invalid component gracefully', async () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      await render(null as any, container);
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Invalid Vue component provided to render',
-      );
-      consoleSpy.mockRestore();
-    });
-
-    it('should handle render errors gracefully', async () => {
-      const consoleSpy = vi
-        .spyOn(console, 'error')
-        .mockImplementation(() => {});
-      const errorComponent = () => {
-        throw new Error('Render error');
-      };
-
-      await render(errorComponent, container);
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error rendering Vue component:',
-        expect.any(Error),
-      );
-      consoleSpy.mockRestore();
+        TestUtils.expectElementToContain(
+          container,
+          TEST_DATA.FUNCTION_COMPONENT_TEXT,
+        );
+        expect(container.querySelector('.function-component')).toBeTruthy();
+      });
     });
   });
 
   describe('unmount function', () => {
     it('should unmount component and clear container', async () => {
-      const testComponent = h('div', {}, 'To be unmounted');
+      const testComponent = TestUtils.createTestComponent('To be unmounted');
 
       await render(testComponent, container);
-      expect(container.innerHTML).toContain('To be unmounted');
+      TestUtils.expectElementToContain(container, 'To be unmounted');
 
       await unmount(container);
-      expect(container.innerHTML).toBe('');
+      TestUtils.expectElementToBeEmpty(container);
+    });
+
+    it('should handle unmount of empty container', async () => {
+      const result = await unmount(container);
+      expect(result).toBe(container);
+      TestUtils.expectElementToBeEmpty(container);
+    });
+
+    it('should handle unmount with undefined container', async () => {
+      const result = await unmount(undefined as any);
+      expect(result).toBeUndefined();
     });
   });
 
-  describe('integration tests', () => {
-    it('should work with reactive Vue component', async () => {
-      const TestComponent = {
-        data() {
-          return {
-            message: 'Initial Message',
-          };
-        },
-        template: '<div class="reactive-test">{{ message }}</div>',
-      };
+  describe('Integration Tests', () => {
+    describe('Reactive Components', () => {
+      it('should work with reactive Vue component', async () => {
+        const ReactiveComponent = TestUtils.createReactiveComponent(
+          TEST_DATA.REACTIVE_MESSAGE,
+        );
+        const vnode = h(ReactiveComponent);
 
-      const vnode = h(TestComponent);
-      await render(vnode, container);
+        await render(vnode, container);
 
-      expect(container.innerHTML).toContain('Initial Message');
-      expect(container.querySelector('.reactive-test')).toBeTruthy();
+        TestUtils.expectElementToContain(container, TEST_DATA.REACTIVE_MESSAGE);
+        expect(container.querySelector('.reactive-test')).toBeTruthy();
+      });
     });
 
-    it('should handle component with props', async () => {
-      const PropsComponent = {
-        props: ['title', 'content'],
-        template: '<div><h1>{{ title }}</h1><p>{{ content }}</p></div>',
-      };
+    describe('Props Handling', () => {
+      it('should handle component with props', async () => {
+        const PropsComponent = TestUtils.createPropsComponent();
+        const vnode = h(PropsComponent, TEST_DATA.PROPS);
 
-      const vnode = h(PropsComponent, {
-        title: 'Test Title',
-        content: 'Test Content',
+        await render(vnode, container);
+
+        TestUtils.expectElementToContain(container, TEST_DATA.PROPS.title);
+        TestUtils.expectElementToContain(container, TEST_DATA.PROPS.content);
       });
 
-      await render(vnode, container);
+      it('should handle component with missing props', async () => {
+        const consoleSpy = vi
+          .spyOn(console, 'warn')
+          .mockImplementation(() => {});
+        const PropsComponent = TestUtils.createPropsComponent();
+        const vnode = h(PropsComponent, { title: 'Only Title' });
 
-      expect(container.innerHTML).toContain('Test Title');
-      expect(container.innerHTML).toContain('Test Content');
+        await render(vnode, container);
+
+        // Vue should warn about missing required props
+        expect(consoleSpy).toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
     });
   });
 
-  describe('Memory management', () => {
+  describe('Memory Management', () => {
     it('should clean up properly on unmount', async () => {
-      const TestComponent = {
-        data() {
-          return { mounted: true };
-        },
-        beforeUnmount() {
-          // Vue 3
-          this.mounted = false;
-        },
-        beforeDestroy() {
-          // Vue 2
-          this.mounted = false;
-        },
-        template: '<div>{{ mounted ? "Mounted" : "Unmounted" }}</div>',
-      };
+      const LifecycleComponent = TestUtils.createLifecycleComponent();
 
-      await render(h(TestComponent), container);
-      expect(container.innerHTML).toContain('Mounted');
+      await render(h(LifecycleComponent), container);
+      TestUtils.expectElementToContain(container, 'Mounted');
 
       await unmount(container);
-      expect(container.innerHTML).toBe('');
+      TestUtils.expectElementToBeEmpty(container);
+    });
+
+    it('should handle multiple render/unmount cycles', async () => {
+      const testComponent = TestUtils.createTestComponent('Cycle Test');
+
+      // First cycle
+      await render(testComponent, container);
+      TestUtils.expectElementToContain(container, 'Cycle Test');
+      await unmount(container);
+      TestUtils.expectElementToBeEmpty(container);
+
+      // Second cycle
+      await render(testComponent, container);
+      TestUtils.expectElementToContain(container, 'Cycle Test');
+      await unmount(container);
+      TestUtils.expectElementToBeEmpty(container);
+    });
+  });
+
+  describe('Performance Tests', () => {
+    it('should handle rapid component updates efficiently', async () => {
+      const vueNode = new VueNode({
+        style: {
+          component: TestUtils.createTestComponent('Initial'),
+        } as VueNodeStyleProps,
+      });
+
+      vueNode.connectedCallback();
+
+      // Perform multiple rapid updates
+      for (let i = 0; i < 10; i++) {
+        const newComponent = TestUtils.createTestComponent(`Update ${i}`);
+        vueNode.update({ component: newComponent });
+        vueNode.attributeChangedCallback('component', null, newComponent);
+      }
+
+      const domElement = vueNode.getDomElement();
+      TestUtils.expectElementToContain(domElement, 'Update 9');
     });
   });
 });

@@ -1,10 +1,8 @@
 import { h, isVue2, isVue3, VNode, Vue2, render as vueRender } from 'vue-demi';
 
 export const vue_core_mark = '__vue_app__';
-export const vue_node_mark = '_vnode'; // vue3实例挂载vnode
 export type AppContainer = Element & {
   [vue_core_mark]?: typeof Vue2 | null;
-  [vue_node_mark]?: VNode;
 };
 
 export async function render(
@@ -36,6 +34,9 @@ export async function render(
 }
 
 export async function unmount(container: AppContainer) {
+  if (!container) {
+    return;
+  }
   if (isVue3) {
     vueRender(null, container);
   } else if (isVue2) {
