@@ -23,6 +23,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": [".dumirc.ts", "src/**/*", "docs/examples/graph-component.vue"],
+  "include": [".dumirc.ts", "src/**/*"],
   "exclude": ["node_modules", ".dumi"]
 }
