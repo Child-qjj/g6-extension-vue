@@ -79,7 +79,7 @@ const graph = new Graph({
   node: {
     type: 'vue',
     style: {
-      component: (data) => <VueNode data={{ ...data }} />, // 非响应式对象需要新的对象引用来触发副作用
+      component: (data) => <VueNode data={Object.assign({}, data)} />, // 非响应式对象需要新的对象引用来触发副作用
     },
   },
 });
