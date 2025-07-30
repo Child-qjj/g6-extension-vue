@@ -9,5 +9,5 @@
   "paths": {
     "g6-extension-vue": ["./src/index.ts"]
   },
-  "include": ["src/**/*", "docs/**/*"]
+  "include": ["src/**/*", "docs/**/*", "api/**/*"]
 }

@@ -8,7 +8,7 @@ import { VueNode } from 'g6-extension-vue';
 import data from '../euro-cup.json';
 import Graph from './graph-component.vue';
 import PlayerNode from './playerNode.vue';
-import { onMounted, ref,h } from 'vue-demi';
+import { onMounted, ref,h } from 'vue';
 
 const options = ref({
   data,

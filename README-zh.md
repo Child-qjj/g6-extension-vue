@@ -79,7 +79,7 @@ const graph = new Graph({
   node: {
     type: 'vue',
     style: {
-      component: (data) => <VueNode data={data} />, // data 会传递给 VueNode，并在数据变化时刷新
+      component: (data) => <VueNode data={Object.assign({}, data)} />, // 非响应式对象需要新的对象引用来触发副作用
     },
   },
 });
@@ -87,10 +87,60 @@ const graph = new Graph({
 
 ## 常见问题
 
-### 1. 为什么 watch props 不起作用？
+### 1. 为什么 watch props 不起作用？（vue3）
 
 VueNode 会在节点属性发生变化时刷新（悬停、点击、拖拽等）。
-传递给 VueNode 的 props 不是响应式的，你可以直接在模板中使用 props，它会显示 props 的最新值。
+确保节点数据是响应式的，更新非响应式数据可以触发副作用。
+
+#### ✅ 正确示例：
+
+```ts
+// 方法1：使用展开运算符创建新对象
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={{ ...data }} />, // 创建新对象
+    },
+  },
+});
+
+// 方法2：使用 Object.assign 创建新对象
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={Object.assign({}, data)} />, // 创建新对象
+    },
+  },
+});
+```
+
+#### ❌ 错误示例：
+
+```ts
+// 错误：直接引用 - 不会触发响应式更新
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={data} />, // 直接引用
+    },
+  },
+});
+
+// 错误：嵌套属性直接引用
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={data.data} />, // 直接嵌套引用
+    },
+  },
+});
+```
+
+**重要说明：** 非响应式对象需要新的对象引用来触发副作用。当你传递相同的对象引用时，Vue 无法知道数据已经改变，因此不会重新渲染组件。
 
 ## 开发
 

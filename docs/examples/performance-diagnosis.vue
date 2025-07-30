@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type { EdgeData, Element, GraphData, GraphOptions, IPointerEvent, NodeData } from '@antv/g6';
 import { ExtensionCategory, HoverActivate, idOf, register } from '@antv/g6';
-import { computed, ComputedRef, onMounted, ref, h } from 'vue-demi';
+import { computed, ComputedRef, onMounted, ref, h } from 'vue';
 import { VueNode } from 'g6-extension-vue';
 import Graph from './graph-component.vue';
 import PerformanceNode from './performance-node.vue';

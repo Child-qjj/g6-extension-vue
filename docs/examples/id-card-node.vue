@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { computed,h } from 'vue-demi';
+import { computed,h } from 'vue';
 import { register, ExtensionCategory } from '@antv/g6';
 import { VueNode } from 'g6-extension-vue';
 import { UserOutlined } from '@ant-design/icons-vue';
