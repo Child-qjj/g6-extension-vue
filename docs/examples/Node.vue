@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { DatabaseFilled } from '@ant-design/icons-vue';
 import { Badge, Flex, Input, Tag, Typography } from 'ant-design-vue';
-import { ref, watch } from 'vue';
 
 type Datum = {
   id?: string;
@@ -11,7 +10,7 @@ type Datum = {
   url?: string;
 };
 
-const props = defineProps<{
+const { data } = defineProps<{
   data: Datum;
 }>();
 
@@ -20,16 +19,7 @@ const emit = defineEmits<{
 }>();
 
 const { Text } = Typography;
-const localData = ref(props.data);
 
-watch(
-  () => props.data,
-  (newData) => {
-    if (newData) {
-      localData.value = newData;
-    }
-  },
-);
 
 const onChange = (event: any) => {
   const url = event.target.value;
@@ -43,9 +33,9 @@ const onChange = (event: any) => {
       <Text>
         <DatabaseFilled />
         Server
-        <Tag>{{ localData.type }}</Tag>
+        <Tag>{{ data.type }}</Tag>
       </Text>
-      <Badge :status="localData.status" />
+      <Badge :status="data.status" />
     </Flex>
     <Text type="secondary">{{ (data as any)?.id }}</Text>
     <Flex align="center">

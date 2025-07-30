@@ -8,7 +8,7 @@ import { VueNode } from 'g6-extension-vue';
 import data from '../euro-cup.json';
 import Graph from './graph-component.vue';
 import PlayerNode from './playerNode.vue';
-import { onMounted, ref,h } from 'vue';
+import { onMounted, ref,h } from 'vue-demi';
 
 const options = ref({
   data,
@@ -25,7 +25,7 @@ const options = ref({
       x: (d: any) => d.x * 3.5,
       y: (d: any) => d.y * 3.5,
       fill: 'transparent',
-      component: (data: any) => h(PlayerNode, { playerInfo: data }),
+      component: (data: any) => h(PlayerNode, { playerInfo: Object.assign({}, data) }), // 修改引用，以触发响应式
     },
   },
   plugins: [

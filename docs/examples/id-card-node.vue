@@ -9,10 +9,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed,h } from 'vue-demi';
 import { register, ExtensionCategory } from '@antv/g6';
 import { VueNode } from 'g6-extension-vue';
-import { h } from 'vue';
 import { UserOutlined } from '@ant-design/icons-vue';
 import {
   Avatar,
@@ -218,7 +217,7 @@ const graphOptions = computed(() => ({
     type: 'vue-node',
     style: {
       size: (datum) => (datum.data.expanded ? [340, 236] : [340, 105]),
-      component: (nodeData) => IDCardNode({ id: nodeData.id, data: nodeData.data })
+      component: (nodeData) => IDCardNode({ id: nodeData.id, data: Object.assign({}, nodeData.data) }) // 修改引用数据，触发组件更新
     }
   },
   behaviors: ['drag-element', 'zoom-canvas', 'drag-canvas'],

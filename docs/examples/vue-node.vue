@@ -48,7 +48,7 @@ import type { Graph as G6Graph, GraphOptions, NodeData } from '@antv/g6';
 import { ExtensionCategory, register } from '@antv/g6';
 import { VueNode as VueNodeExtension } from 'g6-extension-vue';
 import { Button, Form, Layout, Select, Table } from 'ant-design-vue';
-import { onMounted, reactive, ref, h } from 'vue';
+import { onMounted, reactive, ref, h } from 'vue-demi';
 import Graph from './graph-component.vue';
 import Node from './Node.vue';
 
@@ -69,9 +69,9 @@ const isValidUrl = (url: string) => {
 const { Content, Footer } = Layout;
 
 const graphRef = ref<G6Graph | null>(null);
-const modelRef = reactive({ serverType: 'local' } as GraphOptions);
+const modelRef = reactive({ serverType: 'local' });
 
-const options = ref({
+const options = ref<GraphOptions>({
   data: {
     nodes: [
       {
@@ -93,7 +93,7 @@ const options = ref({
       size: [240, 100],
       component: (data: NodeData) => {
         return h(Node, {
-          data: data.data as Datum,
+          data: Object.assign({}, data.data as Datum), // 修改引用，以触发响应式
           onChange: (url) => {
             const getOption = (prev) => {
               if (!graphRef.value || graphRef.value.destroyed) return prev;
@@ -170,10 +170,11 @@ const onRemoveNode = () => {
   const getOption = (options) => ({
     ...options,
     data: {
-      ...options.data,
+      edges:(options.data.edges || []).filter((edge) => edge.target !== nodes[nodes.length - 1].id && edge.source !== nodes[nodes.length - 1].id),
       nodes: nodes.filter((node, index) => index !== nodes.length - 1),
     },
   });
+
   setOptions(getOption(options.value));
 };
 

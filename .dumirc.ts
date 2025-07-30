@@ -20,10 +20,6 @@ export default defineConfig({
           link: '/examples/euro-cup',
           title: 'vue',
         },
-        // {
-        //   link: '/vue2/vue-node',
-        //   title: 'vue2',
-        // },
       ],
     },
   },

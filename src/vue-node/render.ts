@@ -1,4 +1,4 @@
-import { isVue2, isVue3, VNode, Vue2, render as vueRender } from 'vue-demi';
+import { h, isVue2, isVue3, VNode, Vue2, render as vueRender } from 'vue-demi';
 
 export const vue_core_mark = '__vue_app__';
 export const vue_node_mark = '_vnode'; // vue3实例挂载vnode
@@ -7,20 +7,14 @@ export type AppContainer = Element & {
   [vue_node_mark]?: VNode;
 };
 
-export async function render(component: VNode | (() => VNode), container: AppContainer, needsUpdate = false) {
+export async function render(
+  component: VNode | (() => VNode),
+  container: AppContainer,
+  needsUpdate = false,
+) {
   try {
     if (isVue3) {
-      const vnode = typeof component === 'function' ? component() : component;
-      if (vnode && (vnode.type || vnode.component)) {
-        vueRender(vnode, container);
-        const instance = container[vue_node_mark];
-        if (needsUpdate && instance) {
-          // 手动触发更新
-          instance.component?.update();
-        }
-      } else {
-        console.warn('Invalid Vue component provided to render');
-      }
+      vueRender(h(component), container);
     } else if (isVue2) {
       if (needsUpdate && container[vue_core_mark]) {
         const instance = container[vue_core_mark];
