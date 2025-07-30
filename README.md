@@ -79,7 +79,7 @@ const graph = new Graph({
   node: {
     type: 'vue',
     style: {
-      component: (data) => <VueNode data={data} />, // data will be passed to VueNode, and refresh when data changes
+      component: (data) => <VueNode data={Object.assign({}, data)} />, // new object to trigger effect
     },
   },
 });
@@ -87,10 +87,60 @@ const graph = new Graph({
 
 ## Q&A
 
-### 1. Why the watch props is not working?
+### 1. Why the watch props is not working? (vue3)
 
 VueNode will refresh when g6 node property changes.(hover、click、drag、etc.)
-And the props pass to VueNode will not be reactive.you can just use props in the template directly.It will display the latest value of props.
+And make sure that the node data is reactive.
+
+#### ✅ Correct Examples:
+
+```ts
+// Method 1: Create new object with spread operator
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={{ ...data }} />, // Creates new object
+    },
+  },
+});
+
+// Method 2: Use Object.assign to create new object
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={Object.assign({}, data)} />, // Creates new object
+    },
+  },
+});
+```
+
+#### ❌ Incorrect Examples:
+
+```ts
+// DON'T: Direct reference - won't trigger reactivity
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={data} />, // Direct reference
+    },
+  },
+});
+
+// DON'T: Nested property direct reference
+const graph = new Graph({
+  node: {
+    type: 'vue',
+    style: {
+      component: (data) => <VueNode data={data.data} />, // Direct nested reference
+    },
+  },
+});
+```
+
+**Important Note:** Non-reactive objects need new object references to trigger side effects. When you pass the same object reference, Vue won't know the data has changed and won't re-render the component.
 
 ## Development
 
