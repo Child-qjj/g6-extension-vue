@@ -8,7 +8,7 @@ on:
       - v*
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'publish') && github.event.pull_request.merged == true
 
@@ -16,7 +16,8 @@ jobs:
       - name: Disable git hooks
         run: git config core.hooksPath /dev/null
 
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -32,9 +33,51 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Publish
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: |
+            dist/
+            lib/
+            es/
+            package.json
+            README.md
+            LICENSE
+          retention-days: 1
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: ./
+
+      - name: Setup Node.js for publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Configure npm authentication
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          pnpm config set registry https://registry.npmjs.org/
+
+      - name: Publish to npm
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm run publish
+        run: pnpm publish --publish-branch v0.0.1 --no-git-checks

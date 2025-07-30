@@ -1,32 +1,67 @@
-name: github pages
+name: Deploy
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - v0.0.1
+      - v*
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # 如果配置 themeConfig.lastUpdated 为 false，则不需要添加该参数以加快检出速度
           fetch-depth: 0
-      - name: Install Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install pnpm and dependencies
+
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
           run_install: true
-      - name: Build with dumi
-        run: pnpm run docs:build
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+
+      - name: Build docs
+        run: pnpm docs:build
+
+      - name: Copy CNAME
+        run: cp ./CNAME ./docs-dist/CNAME
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-dist
+          path: ./docs-dist
+          retention-days: 1
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-dist
+          path: ./docs-dist
+
+      - name: Setup Git
+        run: |
+          cd ./docs-dist
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy docs - ${{ github.sha }}"
+
+      - name: Push to gh-pages
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs-dist
+          directory: ./docs-dist
+          branch: gh-pages
+          force: true
