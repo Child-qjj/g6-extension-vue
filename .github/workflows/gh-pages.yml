@@ -29,8 +29,8 @@ jobs:
       - name: Build docs
         run: pnpm docs:build
 
-      - name: Copy CNAME
-        run: cp ./CNAME ./docs-dist/CNAME
+      # - name: Copy CNAME
+      #   run: cp ./CNAME ./docs-dist/CNAME
 
       - name: Create archive
         run: tar -czf docs-dist.tar.gz -C ./docs-dist .
