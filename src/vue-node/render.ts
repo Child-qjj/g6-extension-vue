@@ -1,4 +1,4 @@
-import { h, isVue2, isVue3, VNode, Vue2, render as vueRender } from 'vue-demi';
+import { h, isVue2, isVue3, VNode, render as vRender, Vue2 } from 'vue-demi';
 
 export const vue_core_mark = '__vue_app__';
 export type AppContainer = Element & {
@@ -12,7 +12,10 @@ export async function render(
 ) {
   try {
     if (isVue3) {
-      vueRender(h(component), container);
+      vRender(
+        h(typeof component === 'function' ? component() : component),
+        container,
+      );
     } else if (isVue2) {
       if (needsUpdate && container[vue_core_mark]) {
         const instance = container[vue_core_mark];
@@ -38,7 +41,7 @@ export async function unmount(container: AppContainer) {
     return;
   }
   if (isVue3) {
-    vueRender(null, container);
+    vRender(null, container);
   } else if (isVue2) {
     let vm = container[vue_core_mark];
     vm.$destroy();
