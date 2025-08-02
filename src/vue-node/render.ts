@@ -11,20 +11,18 @@ export async function render(
   needsUpdate = false,
 ) {
   try {
+    const vNode = typeof component === 'function' ? component() : component;
     if (isVue3) {
-      vRender(
-        h(typeof component === 'function' ? component() : component),
-        container,
-      );
+      vRender(h(vNode), container);
     } else if (isVue2) {
       if (needsUpdate && container[vue_core_mark]) {
         const instance = container[vue_core_mark];
-        instance.$options.render = (h: any) => h(component);
+        instance.$options.render = () => vNode;
         instance.$forceUpdate();
         return;
       }
       const instance = new Vue2({
-        render: (h: any) => h(component),
+        render: () => vNode,
       });
       instance.$mount(container); // Mount to an in-memory element first
       // 存储实例引用

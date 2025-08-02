@@ -34,7 +34,7 @@ const props = defineProps<{
 }>();
 
 // 计算属性 - 提取和缓存数据
-const nodeData = computed(() => props.data.data as NodeDataType);
+const nodeData = computed(() => props.data.data as unknown as NodeDataType);
 const nodeStates = computed(() => props.data.states || []);
 const isActive = computed(() => nodeStates.value.includes('active'));
 const isSelected = computed(() => nodeStates.value.includes('selected'));

@@ -28,7 +28,7 @@ const onChange = (event: any) => {
 </script>
 
 <template>
-  <Flex :style="{ width: '100%', height: '100%', background: '#fff', padding: '10px', borderRadius: '5px' }" vertical>
+  <Flex :style="{ width: '100%', height: '100%', background: '#fff', padding: '10px', borderRadius: '5px',border: '1px solid gray', }" vertical>
     <Flex align="center" justify="space-between">
       <Text>
         <DatabaseFilled />

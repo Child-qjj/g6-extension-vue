@@ -1,6 +1,6 @@
 <template>
   <Layout style="width: 100%; height: 800px">
-    <Content style="height: 400px">
+    <Content style="height: 400px;overflow: hidden;">
       <Graph :options="options" :on-render="handleGraphRender" key="vue-node" />
     </Content>
     <Footer style="padding-bottom: 0;">
