@@ -1,3 +1,4 @@
+import * as Vue from 'vue';
 import { h, isVue2, isVue3, Vue2, type VNode } from 'vue-demi';
 
 export const vue_core_mark = '__vue_app__';
@@ -6,18 +7,7 @@ export type AppContainer = Element & {
   [vue_core_mark]?: typeof Vue2 | null;
 };
 
-let vRender: (vnode: any, container: AppContainer) => void;
-
-async function initRender() {
-  if (vRender) {
-    return;
-  }
-  if (isVue3) {
-    /* @vite-ignore */
-    const { render } = await import('./vue-utils'); // 导入 Vue 3 渲染函数，避免Vue2不支持render方法
-    vRender = render;
-  }
-}
+const vRender = Vue.render;
 
 export async function render(
   component: VNode | (() => VNode),
@@ -27,8 +17,8 @@ export async function render(
   try {
     const vNode = typeof component === 'function' ? component() : component;
 
-    if (isVue3) {
-      await initRender();
+    if (isVue3 && vRender) {
+      // render函数仅在vue3导出
       vRender(h(vNode), container);
     } else if (isVue2) {
       if (needsUpdate && container[vue_core_mark]) {
@@ -51,13 +41,12 @@ export async function render(
   }
 }
 
-export async function unmount(container: AppContainer) {
+export function unmount(container: AppContainer) {
   if (!container) {
     return;
   }
 
-  if (isVue3) {
-    await initRender();
+  if (isVue3 && vRender) {
     vRender(null, container);
   } else if (isVue2) {
     let vm = container[vue_core_mark];
