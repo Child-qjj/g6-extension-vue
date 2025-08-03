@@ -79,4 +79,4 @@ jobs:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --publish-branch v0.0.1 --no-git-checks
+        run: npm publish --publish-branch v0.1.0 --no-git-checks
