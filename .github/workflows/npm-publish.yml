@@ -13,8 +13,6 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'publish') && github.event.pull_request.merged == true
 
     steps:
-      - name: Disable git hooks
-        run: git config core.hooksPath /dev/null
 
       - name: Checkout
         uses: actions/checkout@v4
