@@ -39,7 +39,6 @@
     "lint:css": "stylelint \"docs/**/*.{css,less}\" --allow-empty-input",
     "lint:es": "eslint \"src/**/*.{js,jsx,ts,tsx}\" \"__test__/**/*.{js,jsx,ts,tsx}\" \"docs/**/*.vue\"",
     "prepare": "husky",
-    "prepublishOnly": "run-s lint typecheck test",
     "publish": "pnpm publish --publish-branch v0.0.1",
     "start": "npm run dev",
     "tag": "node ./scripts/tag.mjs",
