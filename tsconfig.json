@@ -17,6 +17,7 @@
     "target": "ES6",
     "outDir": "dist",
     "baseUrl": "./",
+    "module": "esnext",
     "paths": {
       "@@/*": [".dumi/tmp/*"],
       "g6-extension-vue": ["./src/index.ts"],
