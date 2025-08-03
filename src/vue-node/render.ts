@@ -1,16 +1,25 @@
-import {
-  Vue2,
-  h,
-  isVue2,
-  isVue3,
-  render as vRender,
-  type VNode,
-} from 'vue-demi';
+import { isVue2, isVue3, Vue2, type VNode } from 'vue-demi';
 
 export const vue_core_mark = '__vue_app__';
+
 export type AppContainer = Element & {
   [vue_core_mark]?: typeof Vue2 | null;
 };
+
+let vRender: (vnode: any, container: AppContainer) => void;
+let vH: any = null;
+
+async function initRender() {
+  if (vRender && vH) {
+    return;
+  }
+  if (isVue3) {
+    /* @vite-ignore */
+    const { render, h } = await import('vue');
+    vRender = render;
+    vH = h;
+  }
+}
 
 export async function render(
   component: VNode | (() => VNode),
@@ -19,11 +28,13 @@ export async function render(
 ) {
   try {
     const vNode = typeof component === 'function' ? component() : component;
+
     if (isVue3) {
-      vRender(h(vNode), container);
+      await initRender();
+      vRender(vH(vNode), container);
     } else if (isVue2) {
       if (needsUpdate && container[vue_core_mark]) {
-        const instance = container[vue_core_mark];
+        const instance = container[vue_core_mark] as any;
         instance.$options.render = () => vNode;
         instance.$forceUpdate();
         return;
@@ -32,11 +43,10 @@ export async function render(
         render: () => vNode,
       });
       const el = document.createElement('div');
-      container.appendChild(el); // 将实例元素添加到容器中
-      instance.$mount(el); // Mount to an in-memory element first
-      // 存储实例引用
+      container.appendChild(el);
+      (instance as any).$mount(el);
       container[vue_core_mark] = instance;
-      return instance; // Return the Vue 2 instance
+      return instance;
     }
   } catch (error) {
     console.error('Error rendering Vue component:', error);
@@ -47,14 +57,18 @@ export async function unmount(container: AppContainer) {
   if (!container) {
     return;
   }
+
   if (isVue3) {
+    await initRender();
     vRender(null, container);
   } else if (isVue2) {
     let vm = container[vue_core_mark];
-    vm.$destroy();
-    container[vue_core_mark] = null;
-    container.innerHTML = ''; // 清空容器内容
-    vm = null;
+    if (vm) {
+      vm.$destroy();
+      vm = null;
+      container[vue_core_mark] = null;
+      container.innerHTML = '';
+    }
   }
   return container;
 }
