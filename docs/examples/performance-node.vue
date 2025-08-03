@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed ,onMounted,onUnmounted} from 'vue';
 import { BugOutlined } from '@ant-design/icons-vue';
 import type { NodeData } from '@antv/g6';
 
@@ -35,11 +35,13 @@ const props = defineProps<{
 
 // 计算属性 - 提取和缓存数据
 const nodeData = computed(() => props.data.data as unknown as NodeDataType);
-const nodeStates = computed(() => props.data.states || []);
-const isActive = computed(() => nodeStates.value.includes('active'));
-const isSelected = computed(() => nodeStates.value.includes('selected'));
+const isActive = computed(() => (props.data.states||[]).includes('active'));
+const isSelected = computed(() => {
+  return (props.data.states||[]).includes('selected')
+});
 const nodeType = computed(() => nodeData.value.type);
 const nodeText = computed(() => nodeData.value.text);
+
 
 // 计算属性 - 样式相关
 const backgroundColor = computed(() =>

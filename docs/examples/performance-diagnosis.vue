@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type { EdgeData, Element, GraphData, GraphOptions, IPointerEvent, NodeData } from '@antv/g6';
 import { ExtensionCategory, HoverActivate, idOf, register } from '@antv/g6';
-import { computed, ComputedRef, onMounted, ref, h } from 'vue';
+import { Ref, onMounted, ref, h } from 'vue';
 import { VueNode } from 'g6-extension-vue';
 import Graph from './graph-component.vue';
 import PerformanceNode from './performance-node.vue';
@@ -35,18 +35,7 @@ register(ExtensionCategory.BEHAVIOR, 'hover-element', HoverElement);
 register(ExtensionCategory.NODE, 'vue', VueNode);
 
 const data = ref<GraphData>();
-function setData(json) {
-  data.value = json;
-}
-
-onMounted(() => {
-  fetch('https://assets.antv.antgroup.com/g6/performance-diagnosis.json')
-    .then((res) => res.json())
-    .then(setData);
-});
-
-const options: ComputedRef<GraphOptions> = computed(() => {
-  return {
+const options: Ref<GraphOptions> = ref<GraphOptions>({
     data: data.value,
     animation: false,
     width: 800,
@@ -116,6 +105,16 @@ const options: ComputedRef<GraphOptions> = computed(() => {
       type: 'antv-dagre',
     },
     behaviors: ['zoom-canvas', 'drag-canvas', 'hover-element', 'click-select'],
-  };
+  });
+
+  function setData(json) {
+  data.value = json;
+  options.value.data = json
+}
+
+onMounted(() => {
+  fetch('https://assets.antv.antgroup.com/g6/performance-diagnosis.json')
+    .then((res) => res.json())
+    .then(setData);
 });
 </script>
