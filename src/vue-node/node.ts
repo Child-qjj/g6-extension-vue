@@ -29,18 +29,22 @@ export class VueNode extends HTML {
     super.update(attr);
   }
 
-  public connectedCallback() {
+  public async connectedCallback() {
     super.connectedCallback();
     const { component } = this.attributes as unknown as VueNodeStyleProps;
     // component 已经被回调机制自动创建为 VueNode
     // component has been automatically created as VueNode by the callback mechanism
-    render(component, this.getDomElement(), false);
+    await render(component, this.getDomElement(), false);
   }
 
-  public attributeChangedCallback(name: any, oldValue: any, newValue: any) {
+  public async attributeChangedCallback(
+    name: any,
+    oldValue: any,
+    newValue: any,
+  ) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (name === 'component' && oldValue !== newValue) {
-      render(
+      await render(
         (this.attributes as unknown as VueNodeStyleProps).component,
         this.getDomElement(),
         true,

@@ -171,7 +171,7 @@ describe('VueNode', () => {
     });
 
     describe('Component Rendering', () => {
-      it('should render component on connectedCallback', () => {
+      it('should render component on connectedCallback', async () => {
         const testComponent = TestUtils.createTestComponent(
           TEST_DATA.SIMPLE_TEXT,
         );
@@ -179,13 +179,13 @@ describe('VueNode', () => {
           style: { component: testComponent } as VueNodeStyleProps,
         });
 
-        vueNode.connectedCallback();
+        await vueNode.connectedCallback();
         const domElement = vueNode.getDomElement();
 
         TestUtils.expectElementToContain(domElement, TEST_DATA.SIMPLE_TEXT);
       });
 
-      it('should handle multiple connectedCallback calls gracefully', () => {
+      it('should handle multiple connectedCallback calls gracefully', async () => {
         const testComponent = TestUtils.createTestComponent(
           TEST_DATA.SIMPLE_TEXT,
         );
@@ -193,8 +193,8 @@ describe('VueNode', () => {
           style: { component: testComponent } as VueNodeStyleProps,
         });
 
-        vueNode.connectedCallback();
-        vueNode.connectedCallback(); // Second call should not cause issues
+        await vueNode.connectedCallback();
+        await vueNode.connectedCallback(); // Second call should not cause issues
 
         const domElement = vueNode.getDomElement();
         TestUtils.expectElementToContain(domElement, TEST_DATA.SIMPLE_TEXT);
@@ -202,7 +202,7 @@ describe('VueNode', () => {
     });
 
     describe('Component Updates', () => {
-      it('should update component on attributeChangedCallback', () => {
+      it('should update component on attributeChangedCallback', async () => {
         const initialComponent = TestUtils.createTestComponent(
           TEST_DATA.INITIAL_TEXT,
         );
@@ -216,7 +216,7 @@ describe('VueNode', () => {
 
         vueNode.connectedCallback();
         vueNode.update({ component: updatedComponent });
-        vueNode.attributeChangedCallback(
+        await vueNode.attributeChangedCallback(
           'component',
           initialComponent,
           updatedComponent,
@@ -226,7 +226,7 @@ describe('VueNode', () => {
         TestUtils.expectElementToContain(domElement, TEST_DATA.UPDATED_TEXT);
       });
 
-      it('should handle update with same component', () => {
+      it('should handle update with same component', async () => {
         const testComponent = TestUtils.createTestComponent(
           TEST_DATA.SIMPLE_TEXT,
         );
@@ -236,7 +236,7 @@ describe('VueNode', () => {
 
         vueNode.connectedCallback();
         vueNode.update({ component: testComponent });
-        vueNode.attributeChangedCallback(
+        await vueNode.attributeChangedCallback(
           'component',
           testComponent,
           testComponent,
@@ -248,17 +248,17 @@ describe('VueNode', () => {
     });
 
     describe('Component Cleanup', () => {
-      it('should unmount component on destroy', () => {
+      it('should unmount component on destroy', async () => {
         const testComponent = TestUtils.createTestComponent('Test Component');
         const vueNode = new VueNode({
           style: { component: testComponent } as VueNodeStyleProps,
         });
 
-        vueNode.connectedCallback();
+        await vueNode.connectedCallback();
         const domElement = vueNode.getDomElement();
         TestUtils.expectElementToContain(domElement, 'Test Component');
 
-        vueNode.destroy();
+        await vueNode.destroy();
         TestUtils.expectElementToBeEmpty(domElement);
       });
 
@@ -270,7 +270,7 @@ describe('VueNode', () => {
           style: { component: testComponent } as VueNodeStyleProps,
         });
 
-        expect(() => vueNode.destroy()).not.toThrow();
+        expect(async () => await vueNode.destroy()).not.toThrow();
       });
     });
   });
@@ -412,7 +412,7 @@ describe('VueNode', () => {
       for (let i = 0; i < 10; i++) {
         const newComponent = TestUtils.createTestComponent(`Update ${i}`);
         vueNode.update({ component: newComponent });
-        vueNode.attributeChangedCallback('component', null, newComponent);
+        await vueNode.attributeChangedCallback('component', null, newComponent);
       }
 
       const domElement = vueNode.getDomElement();
