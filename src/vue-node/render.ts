@@ -1,4 +1,11 @@
-import { h, isVue2, isVue3, VNode, render as vRender, Vue2 } from 'vue-demi';
+import {
+  Vue2,
+  h,
+  isVue2,
+  isVue3,
+  render as vRender,
+  type VNode,
+} from 'vue-demi';
 
 export const vue_core_mark = '__vue_app__';
 export type AppContainer = Element & {
@@ -24,7 +31,9 @@ export async function render(
       const instance = new Vue2({
         render: () => vNode,
       });
-      instance.$mount(container); // Mount to an in-memory element first
+      const el = document.createElement('div');
+      container.appendChild(el); // 将实例元素添加到容器中
+      instance.$mount(el); // Mount to an in-memory element first
       // 存储实例引用
       container[vue_core_mark] = instance;
       return instance; // Return the Vue 2 instance
