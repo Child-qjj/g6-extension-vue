@@ -71,4 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm run publish
+        run: |
+          pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          pnpm config set registry https://registry.npmjs.org/
+          pnpm run publish
