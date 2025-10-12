@@ -142,6 +142,43 @@ const graph = new Graph({
 
 **Important Note:** Non-reactive objects need new object references to trigger side effects. When you pass the same object reference, Vue won't know the data has changed and won't re-render the component.
 
+### 2. Custom node edge misalignment
+
+> Tip: The starting point of custom node edges defaults to the top-left (not center). Please set `dx: -width/2` and `dy: -height/2` in your custom node to ensure the edge start is correct.
+
+### 3. How to correctly display custom nodes in minimap
+
+```js
+// For G6 > 5.0.49, the minimap custom shape function supports the third parameter (target)
+{
+  type: 'minimap',
+  shape: (id, elType, target) => {
+    if (elType === 'node' && target.constructor.name === 'VueNode') {
+      return target;
+    }
+    const shape = target.getShape('key');
+    return shape.cloneNode();
+  }
+}
+```
+
+```js
+// For G6 <= 5.0.49, the minimap custom shape function does not support the third parameter.
+// You need to get the node element from the graph instance.
+{
+  type: 'minimap',
+  shape: (id, elType) => {
+    const element = graphRef.value.context.element;
+    const target = element.getElement(id);
+    if (elType === 'node' && target.constructor.name === 'VueNode') {
+      return target;
+    }
+    const shape = target.getShape('key');
+    return shape.cloneNode();
+  }
+}
+```
+
 ## Development
 
 ```bash

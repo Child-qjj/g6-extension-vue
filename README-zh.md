@@ -142,6 +142,39 @@ const graph = new Graph({
 
 **重要说明：** 非响应式对象需要新的对象引用来触发副作用。当你传递相同的对象引用时，Vue 无法知道数据已经改变，因此不会重新渲染组件。
 
+### 2. 自定义节点连线错位问题
+
+> **提示**：自定义节点的连线起点默认是左上角（非中心）。请在自定义节点中设置 `dx: -width/2`、`dy: -height/2`，以确保连线起点正确。
+
+### 3. 自定义节点如何在 minimap 中正确显示
+
+```js
+// G6 > 5.0.49 版本，minimap自定义shape方法支持第三个参数
+{
+  type:'minimap',
+  shape:(id:string,elType:'edge'|'node',target:Node|Edge)=>{
+    if(elType==='node'&&target.constructor.name==='VueNode'){
+      return target
+    }
+    const shape = target.getShape('key');
+    return shape.cloneNode()
+  }
+}
+// G6 <=5.0.49 版本开始，minimap自定义shape方法不支持第三个参数，需要通过graph实例获取节点 element
+{
+  type:'minimap',
+  shape:(id:string,elType:'edge'|'node')=>{
+    const element = graphRef.value.context.element
+    const target = element.getElement(id)
+    if(elType==='node'&&target.constructor.name==='VueNode'){
+      return target
+    }
+    const shape = target.getShape('key');
+    return shape.cloneNode()
+  }
+}
+```
+
 ## 开发
 
 ```bash
