@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkg6_extension_vue=self.webpackChunkg6_extension_vue||[]).push([[935],{68778:function(a,s,n){n.r(s);var t=n(40247),u=n(75271),e=n(82120),_=n(52676);function E(){return(0,_.jsx)(e.dY,{children:(0,_.jsx)(u.Suspense,{fallback:(0,_.jsx)(t.Z,{}),children:(0,_.jsx)(_.Fragment,{})})})}s.default=E}}]);
