@@ -1,3 +1,5 @@
+
+
 # G6 Extension Vue
 
 **English** | [中文](./README-zh.md)
@@ -69,6 +71,7 @@ export default function VueNode(props) {
   return <div class="vue-node">
     {props.data.label}
   </div>
+}
 ```
 
 ### 4. Use Node
